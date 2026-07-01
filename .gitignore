@@ -1,0 +1,29 @@
+# Large artifacts — host on HF/Kaggle, link from the cards. Don't commit to git.
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.ckpt
+checkpoints/
+adapters/
+wandb/
+
+# Full datasets — keep only scripts + a small sample.jsonl in git
+data/raw/
+data/full/
+*.arrow
+*.parquet
+# (allow the small reviewer sample)
+!data/sample.jsonl
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
