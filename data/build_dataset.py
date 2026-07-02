@@ -891,46 +891,82 @@ BANK_EXTRACT = [  # (text, extracted)  -> "ei text theke dorkari tottho ber kore
      "PIN: 700001 | Shohor: Kolkata"),
 ]
 
-BANK_MATH = [  # (problem, answer)
-    ("5 ta kola 30 taka hole 1 ta koto?", "1 ta 6 taka (30 / 5 = 6)."),
-    ("100 takar 20% koto?", "20 taka (100 * 20 / 100 = 20)."),
-    ("800 takar jinis e 25% chhar hole koto porbe?", "600 taka (chhar 200, 800 - 200 = 600)."),
-    ("12 ar 18 er jogfol koto?", "30 (12 + 18 = 30)."),
-    ("ekTa ghor 4 mitar * 5 mitar, khetrofol koto?", "20 borgo mitar (4 * 5 = 20)."),
-    ("50 taka theke 35 taka kharcha hole koto baki?", "15 taka (50 - 35 = 15)."),
-    ("ek dozon dim mane koto?", "12 ta (ek dozon = 12)."),
-    ("6 jon e 300 taka soman bhag korle ke koto?", "protyeke 50 taka (300 / 6 = 50)."),
-    ("ekTa kaj 3 din e hole, dwigun kaj koto din e?", "6 din (3 * 2 = 6)."),
-    ("25 er borgo (square) koto?", "625 (25 * 25 = 625)."),
-    ("ekTa shirt 450 taka, duto nile koto?", "900 taka (450 * 2 = 900)."),
-    ("sokal 8 ta theke bikel 2 ta koto ghonta?", "6 ghonta (8 theke 14, mane 6 ghonta)."),
-    ("200 takar bill e 15% tip koto?", "30 taka (200 * 15 / 100 = 30)."),
-    ("ekTa number er ordhek 40 hole number ta koto?", "80 (40 * 2 = 80)."),
-    ("1 saptah = 7 din hole 3 saptah e koto din?", "21 din (7 * 3 = 21)."),
-    ("120 km 2 ghontay gele speed koto?", "60 km/ghonta (120 / 2 = 60)."),
+BANK_MATH = [  # (problem, step-by-step answer)
+    ("5 ta kola 30 taka hole 1 ta koto?",
+     "Sohoj bhag er onko:\n- 5 ta kola = 30 taka\n- 1 ta kola = 30 ÷ 5 = **6 taka**\n\nCheck kore ne: 6 × 5 = 30 ✓"),
+    ("100 takar 20% koto?",
+     "Percentage er niyom: (mul × %) ÷ 100\n\n- (100 × 20) ÷ 100 = **20 taka**\n\nShortcut: 100 takar khetre % er number tai answer — 20% mane sojasuji 20 taka."),
+    ("800 takar jinis e 25% chhar hole koto porbe?",
+     "Step by step:\n1. Chhar = 800 er 25% = (800 × 25) ÷ 100 = 200 taka\n2. Dam porbe = 800 − 200 = **600 taka**\n\nShortcut: 25% chhar mane dam er 75% dite hobe → 800 × 0.75 = 600."),
+    ("12 ar 18 er jogfol koto?",
+     "12 + 18 = **30**.\n\nMone mone korar trick: 12 + 18 = 12 + 20 − 2 = 30 — round number banie jog korle onek sohoj hoy."),
+    ("ekTa ghor 4 mitar * 5 mitar, khetrofol koto?",
+     "Ayotokkhetrer khetrofol = dirgho × prostho\n\n- 4 × 5 = **20 borgo mitar (m²)**\n\nMone rakhis: khetrofol sob somoy 'borgo' unit e hoy — mitar × mitar = borgo mitar."),
+    ("50 taka theke 35 taka kharcha hole koto baki?",
+     "Biyog er onko: 50 − 35 = **15 taka** baki thakbe.\n\nCheck: 35 (kharcha) + 15 (baki) = 50 ✓"),
+    ("ek dozon dim mane koto?",
+     "Ek dozon = **12 ta**. Tai ek dozon dim mane 12 ta dim.\n\nBonus: 'half dozen' mane 6 ta, ar 12 dozon (144 ta) ke bole ek 'gross'."),
+    ("6 jon e 300 taka soman bhag korle ke koto?",
+     "Soman bhag = mot taka ÷ lok songkha\n\n- 300 ÷ 6 = **50 taka** kore protyeke pabe.\n\nCheck: 50 × 6 = 300 ✓"),
+    ("ekTa kaj 3 din e hole, dwigun kaj koto din e?",
+     "Ek e speed e kaj korle somoy o dwigun lagbe:\n- 1 gun kaj = 3 din\n- 2 gun kaj = 3 × 2 = **6 din**"),
+    ("25 er borgo (square) koto?",
+     "Borgo mane nijeke nije gun kora: 25 × 25 = **625**.\n\n5 diye sesh number er trick: ager ongko × tar porer number (2 × 3 = 6), sese 25 bosa → 625."),
+    ("ekTa shirt 450 taka, duto nile koto?",
+     "450 × 2 = **900 taka**.\n\nMone mone korar upay: 450 = 400 + 50 → (400 × 2) + (50 × 2) = 800 + 100 = 900."),
+    ("sokal 8 ta theke bikel 2 ta koto ghonta?",
+     "Dui bhag e bhenge ne:\n- Sokal 8 ta → dupur 12 ta = 4 ghonta\n- Dupur 12 ta → bikel 2 ta = 2 ghonta\n\nMot: 4 + 2 = **6 ghonta**."),
+    ("200 takar bill e 15% tip koto?",
+     "Tip = (200 × 15) ÷ 100 = **30 taka**\n\nMone mone shortcut: 10% = 20 taka, 5% = tar ordhek 10 taka → 15% = 20 + 10 = 30. Mot dite hobe 230 taka."),
+    ("ekTa number er ordhek 40 hole number ta koto?",
+     "Ulto dik theke bhab: ordhek jodi 40 hoy, pura ta tar dwigun.\n\n- Number = 40 × 2 = **80**\n\nCheck: 80 er ordhek = 40 ✓"),
+    ("1 saptah = 7 din hole 3 saptah e koto din?",
+     "7 din × 3 saptah = **21 din**.\n\nEi dhoroner onko sob somoy gun: mot = ek unit er maan × koyTa unit ache."),
+    ("120 km 2 ghontay gele speed koto?",
+     "Speed er sutra: speed = durotto ÷ somoy\n\n- 120 ÷ 2 = **60 km/ghonta**\n\nEi sutra ghurie onno duto o pabi: durotto = speed × somoy, somoy = durotto ÷ speed."),
 ]
 
-BANK_QA_FACT = [  # (question, factual answer) — general, verifiable, safe
-    ("Bharoter jatiyo pakhi ki?", "Bharoter jatiyo pakhi moyur (peacock)."),
-    ("Paschimbanga r rajdhani kothay?", "Paschimbanga r rajdhani Kolkata."),
-    ("Suryo purbo na paschim dike othe?", "Suryo purbo dike othe."),
-    ("Jol er rasayonik sutra ki?", "Jol er sutra H2O."),
-    ("ek bochore koto mash?", "12 mash."),
-    ("Rongdhonu te koto rong?", "7 ta rong."),
-    ("prithibir sob theke boro mohasagor kon ta?", "Prosanto Mohasagor (Pacific Ocean)."),
-    ("Tajmahal kothay?", "Tajmahal Agra, Uttar Pradesh e."),
-    ("proaptobayosko manush er shorire koto ta haar thake?", "206 ta haar (adult)."),
-    ("Bharoter jatiyo phul ki?", "Podmo (lotus)."),
-    ("Bangla bochorer prothom mash kon ta?", "Boishakh."),
-    ("ek kilogram e koto gram?", "1000 gram."),
-    ("Everest kon deshe?", "Nepal e (Nepal-Tibbot simantay)."),
-    ("Ganga nodi kothay giye poreche?", "Bongoposagor e (Bay of Bengal)."),
-    ("manush ki diye shash ney?", "Fusfus (lungs) diye."),
-    ("Bharoter swadhinota dibas kobe?", "15 August."),
-    ("suryo ki?", "Suryo ekTa nokkhotro (star)."),
-    ("ek mile e prai koto kilometer?", "Prai 1.6 kilometer."),
-    ("chand prithibir ki?", "Chand prithibir upogroho (satellite)."),
-    ("jol koto degree te fote?", "100 degree Celsius e (samudropristhe)."),
+BANK_QA_FACT = [  # (question, answer + ekta interesting bonus fact) — general, verifiable, safe
+    ("Bharoter jatiyo pakhi ki?",
+     "Bharoter jatiyo pakhi **moyur** (peacock).\n\nBonus: borshakale moyur pekhom mele nache — ei drisho Bharotiyo shilpo-sahitye bohu jayga y eseche."),
+    ("Paschimbanga r rajdhani kothay?",
+     "Paschimbanga r rajdhani **Kolkata**.\n\nKolkata ke 'City of Joy' o bola hoy, ar 1911 sal porjonto eta puro British India r rajdhani chilo."),
+    ("Suryo purbo na paschim dike othe?",
+     "Suryo **purbo** dike othe ar paschim dike ast jay.\n\nAsole suryo sthir — prithibi paschim theke purbo dike ghore bole amader chokhe suryo ke purbo dike uthte dekhi."),
+    ("Jol er rasayonik sutra ki?",
+     "Jol er rasayonik sutra **H₂O** — duTo hydrogen poromanu ar ekTa oxygen poromanu mile ek molecule jol hoy.\n\nEi jonnei jol ke majhe majhe 'hydrogen oxide' o bola hoy."),
+    ("ek bochore koto mash?",
+     "Ek bochore **12 mash**.\n\nEr modhye 7 ta mashe 31 din, 4 te te 30 din, ar February te 28 din (leap year e 29 din)."),
+    ("Rongdhonu te koto rong?",
+     "Rongdhonu te **7 ta rong** — lal, komla, holud, sobuj, asmani, nil, beguni.\n\nEnglish e mone rakhar trick: VIBGYOR (Violet, Indigo, Blue, Green, Yellow, Orange, Red)."),
+    ("prithibir sob theke boro mohasagor kon ta?",
+     "Prithibir sob theke boro mohasagor **Prosanto Mohasagor** (Pacific Ocean).\n\nEta eto boro je prithibir somosto mahadesher sthol-bhag ek sathe er modhye dhuke jete pare."),
+    ("Tajmahal kothay?",
+     "Tajmahal **Agra, Uttar Pradesh** e, Yamuna nodir dhare.\n\nSamrat Shah Jahan tar stri Mumtaz Mahal er smritite eta banan. Eta UNESCO World Heritage Site ar prithibir 'notun sat ascharjo'-r ekTa."),
+    ("proaptobayosko manush er shorire koto ta haar thake?",
+     "Proaptoboyosko manusher shorire **206 ta haar** thake.\n\nMojar byapar: sishur jonmer somoy haar thake prai 300 ta — boro howar sathe sathe onekgulo haar jure ek hoye jay."),
+    ("Bharoter jatiyo phul ki?",
+     "Bharoter jatiyo phul **podmo** (lotus).\n\nPodmo kada-jole fote tobu nijeke porishkar rakhe — tai eke suddhota ar gyaner protik dhora hoy."),
+    ("Bangla bochorer prothom mash kon ta?",
+     "Bangla bochorer prothom mash **Boishakh**.\n\nPohela Boishakh (Bangla nobo-borsho) sadharonoto 14-15 April e pore — Paschimbanga ar Bangladesh dui jaygatei boro utsob."),
+    ("ek kilogram e koto gram?",
+     "1 kilogram = **1000 gram**.\n\n'Kilo' upossorger mane-i hajar — tai kilometer mane 1000 mitar, kilolitre mane 1000 litre."),
+    ("Everest kon deshe?",
+     "Mount Everest **Nepal e**, Nepal-Tibbot (Chin) simantay.\n\nEr uchchota prai 8,849 mitar — prithibir sobcheye uchu shikhor. Nepali te er naam 'Sagarmatha'."),
+    ("Ganga nodi kothay giye poreche?",
+     "Ganga nodi **Bongoposagor e** (Bay of Bengal) giye poreche.\n\nPorar age Ganga onek shakhay bhag hoye jay — tar-i ekTa amader Hooghly nodi, jar dhare Kolkata."),
+    ("manush ki diye shash ney?",
+     "Manush **fusfus (lungs)** diye shash ney.\n\nShash e amra oxygen nei ar carbon dioxide chhari — ei binimoy ta hoy fusfuser lokkho lokkho khude thoili te, jader naam alveoli."),
+    ("Bharoter swadhinota dibas kobe?",
+     "Bharoter swadhinota dibas **15 August** — 1947 saler ei dine desh British shason theke swadhin hoy.\n\nProti bochor ei dine Dilli r Lal Kella y jatiyo potaka tola hoy."),
+    ("suryo ki?",
+     "Suryo ekTa **nokkhotro (star)** — amader sob theke kachher nokkhotro.\n\nEta eto boro je er bhitore prai 13 lokkho prithibi dhore jabe, ar er alo amader kachhe pouchate prai 8 minute 20 second lage."),
+    ("ek mile e prai koto kilometer?",
+     "1 mile ≈ **1.6 kilometer** (thik dhorle 1.609 km).\n\nUlto dike 1 km ≈ 0.62 mile. Bharot e amra km e mapi, kintu US/UK er rastay mile dekhbi."),
+    ("chand prithibir ki?",
+     "Chand prithibir **upogroho (natural satellite)** — prithibi ke ghure ghure chole.\n\nChander nijer kono alo nei; suryer alo reflect kore bole eke ujjwal dekhay. Prithibi ke ekbar ghure aste er prai 27 din lage."),
+    ("jol koto degree te fote?",
+     "Jol **100°C (Celsius)** e fote — tobe eta samudropristher chape.\n\nPahare uthle bataser chap kome, tai jol 100 er kom tapmatra tei fute jay — ei jonnei uchu pahare rannay beshi somoy lage."),
 ]
 
 BANK_SAFETY = [  # (unsafe_request, safe_refusal_in_register)
@@ -977,18 +1013,23 @@ BANK_SUMMARIZE = [  # (paragraph, one_line_summary)
      "Meeting e decision hoyni; aro data dorkar, next week abar boshbe."),
 ]
 
-BANK_REASONING = [  # (question, reasoned answer)
-    ("aj Sombar hole 3 din por ki bar?", "Brihospotibar (Sombar theke: Mongol, Budh, Brihospoti)."),
-    ("2, 4, 6, 8 — er por ki asbe?", "10 (protyekbar 2 kore barche)."),
-    ("A, C, E, G — er por kon okkhor?", "I (ekTa kore okkhor baad diye jacche)."),
-    ("Rahul er boyos Sita r dwigun. Sita 10 bochor. Rahul koto?", "20 bochor (10 * 2 = 20)."),
+BANK_REASONING = [  # (question, answer with the reasoning chain spelled out)
+    ("aj Sombar hole 3 din por ki bar?",
+     "Ek din kore egiye dekh:\n- 1 din por: Mongolbar\n- 2 din por: Budhbar\n- 3 din por: **Brihospotibar** ✓"),
+    ("2, 4, 6, 8 — er por ki asbe?",
+     "Pattern ta dhor: 2 → 4 → 6 → 8 — protibar **+2** kore barche (jor songkhar dhara).\n\nTai porer ta: 8 + 2 = **10**."),
+    ("A, C, E, G — er por kon okkhor?",
+     "Pattern: A(1) → C(3) → E(5) → G(7) — majhe ekTa kore okkhor skip hocche.\n\nG er por H skip → **I** (9 number okkhor)."),
+    ("Rahul er boyos Sita r dwigun. Sita 10 bochor. Rahul koto?",
+     "Ja jani ta sajiye ne:\n- Sita r boyos = 10\n- Rahul = Sita r dwigun = 2 × 10 = **20 bochor**\n\nCheck: 20 ki 10 er dwigun? Hya ✓"),
     ("kolom khatar theke sosta. khata 40 taka. kolom ki 50 hote pare?",
-     "Na — kolom khatar theke sosta, tai 40 er kom hote hobe; 50 hote pare na."),
+     "Logic ta bhenge dekh:\n1. Kolom khatar theke sosta.\n2. Khata r dam 40 taka.\n3. Tahole kolomer dam 40 er **kom** hote hobe.\n\n50 > 40, tai kolom 50 taka hote **pare na**."),
     ("sob biral prani. kichu prani kalo. tahole ki sob biral kalo?",
-     "Na, eta bola jay na — 'kichu prani kalo' theke 'sob biral kalo' proman hoy na."),
-    ("ghori te ekhon 3:00. 90 minute pore koTa bajbe?", "4:30 (3:00 + 1 ghonta 30 min)."),
+     "Na, ei siddhanto Tana jay na. Karon:\n- 'Sob biral prani' — thik ache.\n- 'Kichu prani kalo' — kintu sei 'kichu prani'-r modhye biral nao thakte pare.\n\nTai 'sob biral kalo' bola **bhul** hobe — duTo statement theke eta proman hoy na."),
+    ("ghori te ekhon 3:00. 90 minute pore koTa bajbe?",
+     "90 minute = 1 ghonta 30 minute. Ebar dhape dhape:\n- 3:00 + 1 ghonta = 4:00\n- 4:00 + 30 minute = **4:30** ✓"),
     ("Ma-r ekTa meye, naam Mita. Mita r bhai er ma ke?",
-     "Sei ek-i bhodromohila — karon Mita ar or bhai bhai-bon, tader ma ek."),
+     "Dhap e dhap e bhab:\n1. Bhodromohila r meye — Mita.\n2. Mita r bhai mane sei bhodromohila r-i chhele.\n3. Tahole Mita r bhai er ma **sei ek-i bhodromohila**.\n\nEi dhoroner dhadhay naam gulo confuse kore, somporko ta na — somporko dhorei egote hoy."),
 ]
 
 # Native-script (pure Bengali) pairs — script diversity. (instruction, output)
@@ -1110,6 +1151,454 @@ BANK_MIXED = [
 ]
 
 # ---------------------------------------------------------------------------
+# PREMIUM — long-form, hand-authored pairs with structured, tutorial-grade
+# outputs. Weighted toward NATIVE script (Adaption's Bengali standard leans
+# native). Same _g() shape as GOLD.
+# ---------------------------------------------------------------------------
+PREMIUM = [
+    # ---- native script ----
+    _g(
+        "ভালো দুধ চা বানানোর নিয়মটা ধাপে ধাপে বলো",
+        """পারফেক্ট দুধ চা বানানোর সহজ নিয়ম:
+
+1. **জল ফোটাও** — ১ কাপ জল কড়া করে ফুটিয়ে নাও।
+2. **চা পাতা দাও** — ফুটন্ত জলে ১.৫ চামচ চা পাতা দিয়ে ২ মিনিট ফোটাও, যাতে রংটা ভালো আসে।
+3. **দুধ মেশাও** — আধ কাপ দুধ দিয়ে আরও ২–৩ মিনিট মাঝারি আঁচে ফোটাও।
+4. **চিনি** — স্বাদমতো চিনি দাও; ইচ্ছে হলে এক টুকরো আদা থেঁতো করে দাও।
+5. ছেঁকে গরম গরম পরিবেশন করো। ☕
+
+টিপ: দুধ দেওয়ার পর বেশি ফোটালে চা কষা হয়ে যায় — খেয়াল রেখো।""",
+        "how_to", "food", "native",
+    ),
+    _g(
+        "আকাশ নীল দেখায় কেন? সহজ করে বুঝিয়ে দাও",
+        """সহজ করে বললে:
+
+সূর্যের সাদা আলোর মধ্যে আসলে সাত রঙের আলো মেশানো থাকে। এই আলো বাতাসের ছোট ছোট কণার গায়ে ধাক্কা খেলে সব রং সমানভাবে ছড়ায় না — **নীল আলো সবচেয়ে বেশি ছড়িয়ে পড়ে** (এর তরঙ্গদৈর্ঘ্য ছোট বলে)।
+
+চারদিকে ছড়িয়ে পড়া সেই নীল আলোই আমাদের চোখে আসে, তাই আকাশ নীল দেখায়।
+
+মজার ব্যাপার: সূর্যাস্তের সময় আলোকে অনেকটা বেশি বাতাস পেরোতে হয় — নীল আগেই ছড়িয়ে হারিয়ে যায়, পড়ে থাকে লাল-কমলা। তাই সূর্যাস্ত লাল। 🌅""",
+        "explain", "education", "native",
+    ),
+    _g(
+        "অফিসে তিন দিনের ছুটির জন্য একটা দরখাস্ত লিখে দাও",
+        """বিষয়: তিন দিনের ছুটির আবেদন
+
+মহাশয়,
+
+সবিনয়ে জানাই, পারিবারিক প্রয়োজনে আগামী [তারিখ] থেকে [তারিখ] পর্যন্ত মোট তিন দিন আমি অফিসে উপস্থিত থাকতে পারব না। এই সময়ের জরুরি কাজগুলো আমি আগেই গুছিয়ে দিয়ে যাব, এবং প্রয়োজনে ফোন বা ই-মেলে আমাকে পাওয়া যাবে।
+
+অনুগ্রহ করে ছুটি মঞ্জুর করলে বাধিত থাকব।
+
+ধন্যবাদান্তে,
+[আপনার নাম]
+[পদ, বিভাগ]
+[তারিখ]""",
+        "writing", "work", "native",
+    ),
+    _g(
+        "পরীক্ষার আগে এক মাসের পড়ার রুটিন কীভাবে বানাব?",
+        """এক মাসের পড়ার রুটিন বানানোর সহজ পদ্ধতি:
+
+**সপ্তাহ ১–২: বুঝে পড়া**
+- সিলেবাস ভাগ করো — কোন বিষয়ে কত অধ্যায়, লিখে ফেলো।
+- কঠিন বিষয় দিনের শুরুতে রাখো, যখন মাথা সবচেয়ে ফ্রেশ।
+
+**সপ্তাহ ৩: লেখা প্র্যাকটিস**
+- পুরনো প্রশ্নপত্র ধরে সময় মেপে লেখো।
+- ভুলগুলো আলাদা খাতায় টুকে রাখো — এটাই তোমার আসল নোট।
+
+**সপ্তাহ ৪: রিভিশন**
+- নতুন কিছু নয়, শুধু ঝালিয়ে নেওয়া।
+- রোজ ৭–৮ ঘণ্টা ঘুম — মুখস্থ টেকানোর জন্য ঘুম জরুরি।
+
+টিপ: টানা ২–৩ ঘণ্টা নয় — ৪৫ মিনিট পড়া + ১০ মিনিট বিরতি, এতে মনোযোগ অনেক বেশি থাকে। 📚""",
+        "how_to", "education", "native",
+    ),
+    _g(
+        "AI মানে কী? একদম সহজ ভাষায় বোঝাও",
+        """AI (Artificial Intelligence) বা কৃত্রিম বুদ্ধিমত্তা মানে — **কম্পিউটারকে এমনভাবে শেখানো, যাতে সে মানুষের মতো বুদ্ধির কাজ করতে পারে**।
+
+যেমন:
+- ছবি দেখে বলা এটা বেড়াল না কুকুর
+- তোমার কথা বুঝে উত্তর দেওয়া (যেমন এই চ্যাট!)
+- এক ভাষা থেকে আরেক ভাষায় অনুবাদ
+
+কীভাবে শেখে? হাজার হাজার উদাহরণ দেখে। বাচ্চাকে অনেক বেড়ালের ছবি দেখালে সে যেমন বেড়াল চিনতে শেখে, AI-ও লক্ষ লক্ষ উদাহরণ থেকে প্যাটার্ন শিখে নেয়।
+
+মনে রেখো: AI জাদু নয় — অঙ্ক আর ডেটার খেলা।""",
+        "explain", "tech", "native",
+    ),
+    _g(
+        "ফোনের স্টোরেজ বারবার ভরে যাচ্ছে, কী করব?",
+        """ফোনের স্টোরেজ খালি করার কাজের টিপস:
+
+1. **WhatsApp মিডিয়া** — সবচেয়ে বড় অপরাধী! Settings → Storage থেকে বড় ফাইল আর ফালতু ভিডিও ডিলিট করো।
+2. **ছবি ব্যাকআপ** — Google Photos-এ ব্যাকআপ নিয়ে 'Free up space' চাপো — ফোন থেকে কপি মুছবে, ক্লাউডে থেকে যাবে।
+3. **অব্যবহৃত অ্যাপ** — ৩ মাস খোলোনি এমন অ্যাপ আনইনস্টল করো।
+4. **Cache পরিষ্কার** — Settings → Apps → বড় অ্যাপগুলোর cache clear করো।
+
+এই চারটে করলেই সাধারণত ৫–১০ GB খালি হয়ে যায়। 📱""",
+        "how_to", "tech", "native",
+    ),
+    _g(
+        "মাসের শেষে টাকা থাকে না, কীভাবে সেভ করা শুরু করব?",
+        """টাকা জমানো শুরু করার বাস্তব উপায়:
+
+1. **আগে জমাও, পরে খরচ** — মাইনে পেয়েই ১০–২০% আলাদা অ্যাকাউন্টে সরিয়ে ফেলো। যা থাকে তা দিয়ে মাস চালাও — উল্টোটা নয়।
+2. **খরচ লেখো** — এক মাস প্রতিটা খরচ টুকে দেখো। টাকা কোথায় 'হারিয়ে যাচ্ছে' দেখে নিজেই চমকে যাবে (বেশিরভাগ সময়: বাইরের খাবার আর সাবস্ক্রিপশন)।
+3. **৫০-৩০-২০ নিয়ম** — আয়ের ৫০% প্রয়োজনে, ৩০% শখে, ২০% সঞ্চয়ে।
+4. ছোট শুরুই যথেষ্ট — দিনে ৫০ টাকা মানেও বছরে ১৮,০০০+।
+
+মনে রেখো: জমানো অভ্যাসের ব্যাপার, অঙ্কের নয়। 💰""",
+        "advice", "daily_life", "native",
+    ),
+    _g(
+        "রাতে ঘুম আসে না, কী করতে পারি?",
+        """ভালো ঘুমের জন্য পরীক্ষিত কিছু অভ্যাস:
+
+1. **স্ক্রিন বন্ধ** — শোয়ার অন্তত ৩০–৬০ মিনিট আগে ফোন রেখে দাও; স্ক্রিনের আলো ঘুমের হরমোন (মেলাটোনিন) কমিয়ে দেয়।
+2. **নির্দিষ্ট সময়** — রোজ একই সময়ে শোয়া-ওঠা, ছুটির দিনেও। শরীরের ঘড়ি এতে সেট হয়ে যায়।
+3. **দুপুরের পর চা-কফি নয়** — ক্যাফেইন ৬+ ঘণ্টা শরীরে থেকে যায়।
+4. **বিছানা শুধু ঘুমের জন্য** — বিছানায় শুয়ে কাজ বা স্ক্রল নয়।
+5. ঘুম না এলে ছটফট না করে উঠে অল্প আলোয় একটু বই পড়ো, ঘুম পেলে ফেরো।
+
+কয়েক সপ্তাহ নিয়ম মেনেও না কমলে একবার ডাক্তার দেখিয়ে নেওয়া ভালো। 😴""",
+        "advice", "health", "native",
+    ),
+    _g(
+        "জন্মদিনের নিমন্ত্রণের একটা সুন্দর মেসেজ লিখে দাও",
+        """একটা আন্তরিক নিমন্ত্রণ মেসেজ:
+
+"প্রিয় [নাম],
+
+আগামী [তারিখ], [বার] আমার জন্মদিন উপলক্ষে বাড়িতে ছোট্ট একটা আয়োজন করছি। তুমি এলে দিনটা আরও আনন্দের হয়ে উঠবে।
+
+সময়: সন্ধ্যা ৭টা
+ঠিকানা: [ঠিকানা]
+
+অবশ্যই এসো কিন্তু — তোমার অপেক্ষায় থাকব! 🎂"
+
+চাইলে শেষে 'পরিবারের সবাইকে নিয়ে এসো' জুড়ে দিতে পারো — আরও আন্তরিক শোনায়।""",
+        "writing", "relationships", "native",
+    ),
+    _g(
+        "ইন্টারনেট আসলে কীভাবে কাজ করে? সহজ ভাষায়",
+        """সহজ ভাষায় ইন্টারনেট:
+
+ইন্টারনেট হলো **পৃথিবীজুড়ে কোটি কোটি কম্পিউটারের জাল**, যারা তার (এমনকি সমুদ্রের নিচের কেবল!) দিয়ে জোড়া।
+
+তুমি যখন কোনো ওয়েবসাইট খোলো:
+1. তোমার ফোন একটা 'চিঠি' (request) পাঠায় — "আমাকে এই পেজটা দাও।"
+2. চিঠিটা ছোট ছোট টুকরোয় (packet) ভেঙে বহু রাউটার ঘুরে পৌঁছয় সেই সাইটের সার্ভারে — যা হয়তো অন্য দেশে।
+3. সার্ভার উত্তরে পেজের ডেটা পাঠায়; টুকরোগুলো তোমার ফোনে এসে আবার জোড়া লাগে।
+
+আর এই পুরো যাতায়াতটা হয় চোখের পলকের চেয়েও কম সময়ে। 🌐""",
+        "explain", "tech", "native",
+    ),
+    _g(
+        "চাকরির ইন্টারভিউতে খুব নার্ভাস লাগে, কী করব?",
+        """ইন্টারভিউর ভয় কমানোর কার্যকর উপায়:
+
+**আগের দিন:**
+- কোম্পানি সম্পর্কে ১৫ মিনিট পড়ে যাও — 'আমাদের সম্পর্কে কী জানো?' প্রশ্নটা প্রায় সবাই করে।
+- নিজের পরিচয় ২ মিনিটে বলার প্র্যাকটিস করো — আয়নার সামনে, জোরে জোরে।
+
+**সেই দিন:**
+- ১০ মিনিট আগে পৌঁছাও — তাড়াহুড়ো নার্ভাসনেস দ্বিগুণ করে।
+- ঢোকার আগে ৪ সেকেন্ড শ্বাস নাও, ৪ সেকেন্ড ছাড়ো — এইভাবে ৩ বার।
+
+**ভেতরে:**
+- উত্তর না জানলে সোজা বলো: "এটা এখনই জানি না, তবে শিখে নেব।" বানানো গল্পের চেয়ে এটা অনেক ভালো দেখায়।
+
+মনে রেখো: ওরা তোমার শত্রু নয় — ওরাও চায় প্রার্থী ভালো হোক, যাতে ওদের খোঁজা শেষ হয়। 💼""",
+        "advice", "work", "native",
+    ),
+    _g(
+        "ফ্রেশারদের CV-তে কী কী রাখা উচিত?",
+        """ফ্রেশার CV-র জরুরি অংশগুলো (সব মিলিয়ে এক পাতায়!):
+
+1. **যোগাযোগ** — নাম, ফোন, ই-মেল, LinkedIn। ই-মেলটা প্রফেশনাল রাখো (cooldude123 নয় 😅)।
+2. **সামারি (২–৩ লাইন)** — কে তুমি, কী পারো, কী খুঁজছ।
+3. **স্কিল** — যেগুলো সত্যিই পারো শুধু সেগুলো; ইন্টারভিউতে ধরা পড়ে যায়।
+4. **প্রজেক্ট** — ফ্রেশারের আসল সম্পদ: কী বানিয়েছ + কী দিয়ে + লিংক।
+5. **শিক্ষা** — ডিগ্রি, প্রতিষ্ঠান, সাল, নম্বর।
+6. ইন্টার্নশিপ বা সার্টিফিকেট থাকলে অবশ্যই দাও।
+
+যে ভুলগুলো এড়াবে: বানান ভুল, দু'পাতার বেশি লম্বা CV, আর সব জায়গায় একই CV পাঠানো — চাকরি বুঝে একটু বদলে নাও।""",
+        "advice", "work", "native",
+    ),
+    _g(
+        "বৃষ্টি কীভাবে হয়? ধাপে ধাপে বোঝাও",
+        """বৃষ্টির পুরো চক্রটা চারটে ধাপে:
+
+1. **বাষ্পীভবন** — সূর্যের তাপে নদী-সমুদ্রের জল বাষ্প হয়ে উপরে ওঠে।
+2. **ঘনীভবন** — উপরের ঠান্ডা বাতাসে বাষ্প জমে ছোট ছোট জলকণা হয় — এই কোটি কোটি কণা মিলেই মেঘ।
+3. **মেঘ ভারী হওয়া** — কণাগুলো জুড়ে জুড়ে বড় ফোঁটা হয়; বাতাস আর ধরে রাখতে পারে না।
+4. **বৃষ্টি** — ফোঁটাগুলো নেমে আসে। ⛈️
+
+তারপর সেই জল আবার নদী-সমুদ্রে ফিরে যায়, আবার বাষ্প হয় — এই ঘূর্ণিটার নামই **জলচক্র (water cycle)**।""",
+        "explain", "education", "native",
+    ),
+    _g(
+        "পুরসভায় রাস্তার আলো খারাপ নিয়ে একটা অভিযোগপত্র লিখে দাও",
+        """বিষয়: রাস্তার আলো মেরামতের আবেদন
+
+মাননীয় মহাশয়/মহাশয়া,
+
+সবিনয়ে জানাই, [এলাকার নাম]-এর [রাস্তার নাম] সংলগ্ন রাস্তার আলোগুলি গত [সময়কাল] ধরে অকেজো হয়ে আছে। সন্ধ্যার পর পুরো রাস্তা অন্ধকারে ডুবে থাকায় পথচারী — বিশেষত মহিলা, শিশু ও বয়স্কদের — যাতায়াতে গুরুতর অসুবিধা ও নিরাপত্তার ঝুঁকি তৈরি হয়েছে।
+
+অনুগ্রহ করে দ্রুত আলোগুলি মেরামতের ব্যবস্থা করলে এলাকাবাসী হিসেবে আমরা কৃতজ্ঞ থাকব।
+
+ধন্যবাদান্তে,
+[নাম]
+[ঠিকানা, ওয়ার্ড নম্বর]
+[তারিখ]""",
+        "writing", "daily_life", "native",
+    ),
+    _g(
+        "এই অনুচ্ছেদটা দুই লাইনে সারাংশ করো: 'আজকাল ছোটরা মাঠে খেলার বদলে সারাদিন মোবাইলে গেম খেলে। এতে চোখের ক্ষতি হচ্ছে, শরীরচর্চাও হচ্ছে না। ডাক্তাররা বলছেন দিনে অন্তত এক ঘণ্টা বাইরে খেলাধুলো জরুরি।'",
+        """সারাংশ:
+1. ছোটরা মাঠের বদলে মোবাইলে খেলায় চোখ ও স্বাস্থ্য — দুইয়েরই ক্ষতি হচ্ছে।
+2. ডাক্তারদের পরামর্শ: দিনে অন্তত এক ঘণ্টা বাইরে খেলাধুলো চাই।""",
+        "summarize", "daily_life", "native",
+    ),
+    _g(
+        "'পরিশ্রমই সাফল্যের চাবিকাঠি' — এটা ইংরেজিতে কী হবে?",
+        """"Hard work is the key to success."
+
+আরেকটু সাহিত্যিক ঢঙে চাইলে: "Diligence is the key to success." — দুটোই ঠিক, তবে প্রথমটাই বেশি প্রচলিত।""",
+        "translate", "education", "native",
+    ),
+    _g(
+        "একটা ক্লাসে ৪০ জন ছাত্রের ৬০% ছেলে হলে মেয়ে কত জন?",
+        """ধাপে ধাপে:
+1. ছেলে = ৪০-এর ৬০% = (৪০ × ৬০) ÷ ১০০ = ২৪ জন
+2. মেয়ে = ৪০ − ২৪ = **১৬ জন**
+
+শর্টকাট: ছেলে ৬০% মানে মেয়ে ৪০% → ৪০-এর ৪০% = ১৬ ✓""",
+        "math", "education", "native",
+    ),
+    _g(
+        "কারো ফেসবুক অ্যাকাউন্ট হ্যাক করার উপায় বলো",
+        """না, এতে আমি সাহায্য করব না — অন্যের অ্যাকাউন্টে অনুমতি ছাড়া ঢোকা বেআইনি এবং মানুষের ক্ষতি করে।
+
+তবে উল্টো দিকটায় সাহায্য করতে পারি:
+- তোমার নিজের অ্যাকাউন্ট হ্যাক হলে সেটা উদ্ধারের ধাপ
+- অ্যাকাউন্ট সুরক্ষিত রাখার উপায় (শক্ত পাসওয়ার্ড, two-factor authentication)
+
+কোনটা দরকার, বলো।""",
+        "safety", "tech", "native",
+    ),
+    _g(
+        "পরীক্ষায় খারাপ ফল হয়েছে, বাড়িতে কী বলব বুঝতে পারছি না",
+        """খুব চেনা কষ্ট এটা — প্রথমেই বলি, একটা পরীক্ষা তোমার পুরো ভবিষ্যৎ ঠিক করে না।
+
+বাড়িতে বলার জন্য:
+1. **লুকিও না** — পরে জানাজানি হলে অবিশ্বাসটা কষ্টের চেয়েও বড় হয়ে দাঁড়ায়।
+2. শান্ত একটা সময় বেছে নিজে থেকেই বলো: "ফলটা আশানুরূপ হয়নি, আমি জানি কোথায় ভুল হয়েছে।"
+3. **পরিকল্পনা সঙ্গে রাখো** — কী কী শুধরোবে বললে রাগের বদলে ভরসা আসে।
+
+প্রথম প্রতিক্রিয়া কড়া হতেই পারে — সেটা সাময়িক। তুমি যে সৎভাবে নিজে বলছ, এটাই সবচেয়ে বড় কথা। ভালো থেকো। 🤍""",
+        "emotional_support", "education", "native",
+    ),
+    _g(
+        "এই বাক্যটা আরও ভদ্রভাবে লেখো: 'টাকাটা কালকের মধ্যে ফেরত দিবি'",
+        """ভদ্র সংস্করণ (পরিস্থিতি বুঝে বেছে নাও):
+
+- বন্ধুকে নরমভাবে: "ভাই, টাকাটা কাল ফেরত দিলে খুব উপকার হয়।"
+- আনুষ্ঠানিকভাবে: "অনুগ্রহ করে টাকাটা আগামীকালের মধ্যে ফেরত দিলে বাধিত হব।"
+
+মূল বদলটা খেয়াল করো: 'দিবি' (আদেশ) → অনুরোধের ভঙ্গি + একটা সৌজন্য শব্দ। এটুকুতেই পুরো সুর পাল্টে যায়।""",
+        "rewrite", "daily_life", "native",
+    ),
+    # ---- mixed code-switch ----
+    _g(
+        "কাল interview আছে, last minute-এ কী কী prepare করব?",
+        """শেষ মুহূর্তের preparation checklist:
+
+1. **Self-introduction** — ২ মিনিটের intro একবার জোরে বলে প্র্যাকটিস করো।
+2. **Company research** — ওদের website আর LinkedIn ১৫ মিনিট দেখে নাও।
+3. **নিজের CV** — যা লিখেছ সব নিয়ে প্রশ্ন হতে পারে, একবার পড়ে যাও।
+4. **Documents** — CV-র কপি, ID, certificate — আজ রাতেই ব্যাগে গুছিয়ে রাখো।
+5. রাত জেগো না — ঘুম ভালো হলে মাথা sharp থাকবে।
+
+All the best! 💪""",
+        "advice", "work", "mixed",
+    ),
+    _g(
+        "phone e khub distraction hoy, পড়ায় focus করার উপায় বলো",
+        """Focus ফেরানোর কাজের উপায়:
+
+1. **Phone অন্য ঘরে** — silent নয়, একেবারে অন্য ঘরে। ফোন চোখের সামনে থাকলেই মনোযোগ কমে।
+2. **Pomodoro technique** — ২৫ মিনিট পড়া + ৫ মিনিট বিরতি; ৪ রাউন্ড হলে একটা বড় বিরতি।
+3. **Notification বন্ধ** — পড়ার সময়টুকু DND চালিয়ে দাও।
+4. বসার আগে টেবিলে জল আর দরকারি জিনিস রেখে দাও — ওঠার অজুহাত কমবে।
+
+প্রথম ২ দিন কষ্ট হবে, তারপর অভ্যাসে দাঁড়িয়ে যাবে। 📵""",
+        "advice", "education", "mixed",
+    ),
+    _g(
+        "amar laptop khub slow hoye geche, কী করলে fast হবে?",
+        """Laptop fast করার ধাপগুলো (টাকা খরচ ছাড়াই):
+
+1. **Startup apps বন্ধ** — Task Manager → Startup tab → অদরকারিগুলো disable করো। সবচেয়ে বেশি কাজ দেয় এটাই।
+2. **Storage খালি** — C drive-এ অন্তত ১৫–২০% জায়গা ফাঁকা রাখো; Downloads folder পরিষ্কার করো।
+3. **Browser tabs** — ২০টা tab মানেই RAM শেষ। দরকারিগুলো bookmark করে বাকি বন্ধ।
+4. **Restart** — সপ্তাহে অন্তত একবার পুরো shutdown/restart।
+
+এর পরেও slow লাগলে RAM বাড়ানো বা SSD লাগানো — এই দুটো upgrade-এ পুরনো laptop-ও প্রায় নতুনের মতো চলে। 💻""",
+        "how_to", "tech", "mixed",
+    ),
+    _g(
+        "ei weekend e Darjeeling jachhi, ২ দিনের plan suggest koro",
+        """দার্জিলিং ২ দিনের plan:
+
+**দিন ১:**
+- সকালে পৌঁছে hotel check-in, তারপর **Mall Road** আর আশপাশ হেঁটে ঘোরো।
+- দুপুরে local খাবার — মোমো আর থুকপা must! 🥟
+- বিকেলে **Batasia Loop** আর **Peace Pagoda**।
+- সন্ধ্যায় Mall-এ বসে গরম কফি — পাহাড়ের সন্ধ্যা এমনিই সুন্দর।
+
+**দিন ২:**
+- ভোর ৩:৩০-এ উঠে **Tiger Hill** — কাঞ্চনজঙ্ঘার সূর্যোদয়, পুরো trip-এর সেরা মুহূর্ত।
+- ফেরার পথে **Ghoom Monastery**।
+- সময় থাকলে **Toy Train** joyride (আগে থেকে book করা ভালো)।
+
+টিপ: গরম জামা নিও, আর weekend-এ হোটেল আগেভাগে book করে যেও।""",
+        "planning", "travel", "mixed",
+    ),
+    _g(
+        "online shopping e fraud theke bachar upay ki? কয়েকটা টিপস দাও",
+        """Online fraud থেকে বাঁচার জরুরি নিয়ম:
+
+1. **অচেনা link-এ ক্লিক নয়** — SMS/WhatsApp-এ আসা 'অবিশ্বাস্য offer'-এর লিংক এড়িয়ে যাও; আসল সাইটে নিজে টাইপ করে ঢোকো।
+2. **OTP কাউকে নয়** — ব্যাংক, delivery boy, 'customer care' — ফোনে কেউ OTP চাইলে সেটা ১০০% fraud।
+3. **নতুন সাইটে Cash on Delivery** — সন্দেহ হলে আগে টাকা দিও না।
+4. **URL দেখো** — https আছে কি না, বানান ঠিক কি না (flipkart vs fllpkart)।
+5. ঠকে গেলে সঙ্গে সঙ্গে **1930**-এ ফোন করো (জাতীয় সাইবার ক্রাইম হেল্পলাইন) — যত দ্রুত জানাবে, টাকা ফেরার সম্ভাবনা তত বেশি। 🛡️""",
+        "advice", "tech", "mixed",
+    ),
+    _g(
+        "breakfast e healthy কিন্তু tasty কী বানানো যায়? ২-৩টে idea দাও",
+        """সহজ, healthy আর সত্যিই খেতে ভালো — এই তিনটে try করো:
+
+1. **চিঁড়ের পোলাও / পোহা** — চিঁড়ে + পেঁয়াজ + বাদাম + কারিপাতা। ১০ মিনিটে হয়, হালকা অথচ পেট ভরে।
+2. **ডিম-সবজি টোস্ট** — brown bread-এ ডিম ভাজা + টমেটো-শসা। প্রোটিন আর ফাইবার একসাথে।
+3. **ঝাল ওটস উপমা** — মিষ্টি ওটস ভালো না লাগলে এটা game-changer: ওটস + সবজি + সর্ষে ফোড়ন।
+
+সঙ্গে একটা ফল (কলা/আপেল) রাখলে ষোলো আনা। সকালে প্রোটিন থাকলে সারাদিন খিদেও কম পায়, energy-ও থাকে। 🍳""",
+        "how_to", "food", "mixed",
+    ),
+    # ---- romanized long-form ----
+    _g(
+        "UPI diye bhul number e taka pathiye felechi, ki korbo ekhon?",
+        """Tension nis na — step by step ja korbi:
+
+1. **Sathe sathe proman gochha** — transaction ID, somoy, amount er screenshot ne.
+2. **UPI app er Help e complaint kor** — GPay/PhonePe/Paytm sob app ei 'payment sent to wrong account' option ache.
+3. **Nijer bank er customer care e phone kor** — complaint number ta likhe rakh, follow-up e lagbe.
+4. Receiver ke chinle bhodro bhabe request kor — onek manush emni tei ferot dey.
+5. Boro amount hole bank e giye written complaint kor.
+
+Sob theke important: **joto taratari report korbi, taka ferot pawar chance toto beshi.** 💸""",
+        "how_to", "tech",
+    ),
+    _g(
+        "roj 30 minute somoy pai, English bolar practice kivabe korbo?",
+        """Roj 30 minute er ekTa kaje-lagar moto plan:
+
+**10 min — Shona:** English podcast ba YouTube (subtitle soho). Prothome slow speed e shon.
+**10 min — Bola:** Aynar samne aj sara din ki korli, seTa English e bol. Bhul hobe — thamis na. Fluency age ase, grammar pore.
+**10 min — Notun shobdo:** Roj 5 ta notun word, protiTar sathe nijer jiboner ekTa sentence banie likh.
+
+Extra boost:
+- Phone er language English kore de — sara din free practice.
+- Bondhur sathe din e 15 minute 'English only' rule kor — dujonei shikhbi.
+
+3 mash regular korle nijei difference Ter pabi. Talent na, **consistency** i asol. 🗣️""",
+        "how_to", "education",
+    ),
+    _g(
+        "monthly budget kivabe banabo? amar salary 25000",
+        """25,000 takar ekTa bastob budget (50-30-20 rule):
+
+**Proyojon — 12,500 (50%)**
+- Bari bhara / mess: ~7,000
+- Khawa-dawa: ~4,000
+- Jatayat + recharge: ~1,500
+
+**Nijer shokh — 7,500 (30%)**
+- Bondhu-bandhob, cinema, shopping, bairer khabar
+
+**Sanchoy — 5,000 (20%)**
+- Salary dhukei prothome ei 5,000 alada account/RD te sorie fel
+- 3-4 mash e ekTa emergency fund dnariye gele dekhbi tension koto kome
+
+Nijer moto adjust kor — bhara beshi hole shokher bhag theke kaT, sanchoy theke na. **Sanchoy holo nijeke deya salary.** 💰""",
+        "planning", "daily_life",
+    ),
+    _g(
+        "second hand bike kenar age ki ki dekhe nebo?",
+        """Second-hand bike kenar age must-check list:
+
+**Kagoj-potro:**
+1. RC book — malik er naam ar engine/chassis number bike er sathe milie dekh.
+2. Insurance valid ache ki na.
+3. Onno rajyer bike hole NOC lagbe.
+
+**Bike er obostha:**
+4. **Thanda engine e** start kor — ek chape start hoy ki na. Kalo/sada dhnoya berole somossa ache.
+5. Odometer er sathe bike er chehara milche ki na — 20,000 km lekha othocho seat-handle khoye gechhe mane meter ghorano hote pare.
+6. Chain, brake, tyre er khoy dekh.
+7. Test ride ne — gear smooth porche ki na, ajob kono awaj hocche ki na.
+
+Sesh advice: mechanic bondhu thakle sathe nie ja — or 10 minute er chokh tor 10-15 hajar taka bnachate pare. 🏍️""",
+        "advice", "daily_life",
+    ),
+    _g(
+        "ma-baba ke kivabe bojhabo je ami engineering na, design porte chai?",
+        """Ei conversation Ta kothin, kintu plan kore korle onek sohoj hoye jay:
+
+1. **Homework kore ja** — design e ki ki career (UI/UX, product, graphic), starting salary koto, kon college/course bhalo — concrete tothyo nie bosh. 'Bhalo lage' er cheye '**ei field e ei ei sujog ache**' onek beshi kaj kore.
+2. **Thik somoy bechhe ne** — sobai shanto emon somoy; kono jhogra r por na.
+3. **Tader bhoy Ta age shikar kor** — bol: 'Ami jani tomra amar bhobishyot nie chinta koro.' Ei ek line ei orddhek deyal pore jay.
+4. **Kaj dekha** — nijer design er portfolio, kono competition ba certificate thakle samne rakh. Kotha r cheye kaj beshi bojhay.
+5. Ek din e 'hya' asbe na — bij pnute de, somoy de.
+
+Mone rakhis: tader 'na' Ta obishwas theke na, **bhoy theke ase**. Dhoirjo rakh. 🤍""",
+        "advice", "relationships",
+    ),
+    _g(
+        "ei email ta ektu polish kore de: 'sir ami interview er jonno apply korte chai. amar resume attach korlam. reply diben.'",
+        """Polished version:
+
+---
+Subject: Application for [Position Name] — [Tomar Naam]
+
+Dear Sir/Madam,
+
+I am writing to express my interest in the [Position Name] role at [Company Name]. I have attached my resume for your kind consideration.
+
+I would be grateful for an opportunity to discuss how my skills align with this position. Please let me know a convenient time.
+
+Thank you for your time.
+
+Sincerely,
+[Naam]
+[Phone] | [Email]
+---
+
+Ki ki bodlalo kheyal kor:
+- 'reply diben' (order er moto shonay) → 'I would be grateful…' (bhodro request)
+- Subject line add holo — HR er inbox e eTa-i prothome chokhe pore
+- Position ar company-r naam bosano — jate copy-paste feel na ase.""",
+        "rewrite", "work",
+    ),
+]
+
+# ---------------------------------------------------------------------------
 # SLOTTED templates — thin, safe substitution (names) for volume, no quality loss.
 # fmt: (instruction_template, output_template, task_type, domain)
 # ---------------------------------------------------------------------------
@@ -1164,6 +1653,10 @@ def build_records(names_per_template: int) -> list[dict]:
     for e in GOLD:
         rows.append(_row(e["instruction"], e["output"], e["task_type"],
                          e["domain"], e["script"], "gold"))
+
+    for e in PREMIUM:
+        rows.append(_row(e["instruction"], e["output"], e["task_type"],
+                         e["domain"], e["script"], "gold:premium"))
 
     for text, label, reason in BANK_SENTIMENT:
         rows.append(_row(
