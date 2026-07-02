@@ -55,6 +55,9 @@ def main() -> None:
                     help="preview credit cost and exit — spends nothing")
     ap.add_argument("--yes", action="store_true",
                     help="actually run the adaptation (SPENDS credits)")
+    ap.add_argument("--resume", default="",
+                    help="dataset_id of an already-launched job: skip upload/run, "
+                         "just wait for it and download (spends nothing new)")
     args = ap.parse_args()
 
     load_env()
@@ -68,40 +71,56 @@ def main() -> None:
     job_spec: dict = {} if args.rows <= 0 else {"max_rows": args.rows}
     scope = "ALL" if args.rows <= 0 else str(args.rows)
 
-    # 1. UPLOAD ---------------------------------------------------------------
-    print(f"Uploading {args.input} ...")
-    upload = client.datasets.upload_file(args.input)
-    print(f"  dataset_id = {upload.dataset_id}")
+    if args.resume:
+        dataset_id = args.resume
+        print(f"Resuming already-launched job {dataset_id} ...")
+    else:
+        # 1. UPLOAD -----------------------------------------------------------
+        print(f"Uploading {args.input} ...")
+        upload = client.datasets.upload_file(args.input)
+        dataset_id = upload.dataset_id
+        print(f"  dataset_id = {dataset_id}")
 
-    # 2. WAIT FOR INGEST ------------------------------------------------------
+        # 2. WAIT FOR INGEST --------------------------------------------------
+        while True:
+            status = client.datasets.get_status(dataset_id)
+            if getattr(status, "row_count", None) is not None:
+                break
+            time.sleep(2)
+        print(f"  ingested {status.row_count} rows")
+
+        # 3. ESTIMATE (free) --------------------------------------------------
+        est = client.datasets.run(dataset_id, column_mapping=mapping,
+                                  job_specification=job_spec, estimate=True)
+        print(f"\nESTIMATE for {scope} rows: "
+              f"~{getattr(est, 'estimated_minutes', '?')} min, "
+              f"~{getattr(est, 'estimated_credits_consumed', '?')} credits.")
+
+        if args.estimate_only or not args.yes:
+            print("\nNothing spent. Re-run with --yes to actually adapt "
+                  "(add --rows N to limit scope).")
+            return
+
+        # 4. ADAPT (SPENDS CREDITS) --------------------------------------------
+        job = client.datasets.run(dataset_id, column_mapping=mapping,
+                                  job_specification=job_spec)
+        print(f"\nLaunched — ~{job.estimated_minutes} min, "
+              f"{job.estimated_credits_consumed} credits. Waiting...")
+
+    # WAIT — tolerate transient network drops (wifi blips kill getaddrinfo)
+    deadline = time.time() + 3600
     while True:
-        status = client.datasets.get_status(upload.dataset_id)
-        if getattr(status, "row_count", None) is not None:
+        try:
+            client.datasets.wait_for_completion(dataset_id, timeout=3600)
             break
-        time.sleep(2)
-    print(f"  ingested {status.row_count} rows")
-
-    # 3. ESTIMATE (free) ------------------------------------------------------
-    est = client.datasets.run(upload.dataset_id, column_mapping=mapping,
-                              job_specification=job_spec, estimate=True)
-    print(f"\nESTIMATE for {scope} rows: "
-          f"~{getattr(est, 'estimated_minutes', '?')} min, "
-          f"~{getattr(est, 'estimated_credits_consumed', '?')} credits.")
-
-    if args.estimate_only or not args.yes:
-        print("\nNothing spent. Re-run with --yes to actually adapt "
-              "(add --rows N to limit scope).")
-        return
-
-    # 4. ADAPT (SPENDS CREDITS) ----------------------------------------------
-    job = client.datasets.run(upload.dataset_id, column_mapping=mapping,
-                              job_specification=job_spec)
-    print(f"\nLaunched — ~{job.estimated_minutes} min, "
-          f"{job.estimated_credits_consumed} credits. Waiting...")
-    client.datasets.wait_for_completion(upload.dataset_id, timeout=3600)
+        except Exception as e:  # noqa: BLE001 — SDK raises APIConnectionError etc.
+            if time.time() > deadline:
+                raise
+            print(f"  connection hiccup ({type(e).__name__}), retrying in 30s ...")
+            time.sleep(30)
 
     # 5. READ IMPROVEMENT -----------------------------------------------------
-    ds = client.datasets.get(upload.dataset_id)
+    ds = client.datasets.get(dataset_id)
     summary = getattr(ds, "evaluation_summary", None)
     if summary:
         print(f"Quality: {summary.grade_before} -> {summary.grade_after}")
@@ -110,14 +129,14 @@ def main() -> None:
 
     # 6. EXPORT ---------------------------------------------------------------
     # download() returns the adapted dataset CONTENT (CSV text), not a URL.
-    adapted = client.datasets.download(upload.dataset_id)
+    adapted = client.datasets.download(dataset_id)
     if isinstance(adapted, bytes):
         adapted = adapted.decode("utf-8")
     (DATA / "full").mkdir(exist_ok=True)
     out = DATA / "full" / "banglish_instructions.adapted.csv"
     out.write_text(adapted, encoding="utf-8")
     (DATA / "adapted_result.txt").write_text(
-        f"dataset_id={upload.dataset_id}\n", encoding="utf-8")
+        f"dataset_id={dataset_id}\n", encoding="utf-8")
     print(f"\nSaved adapted dataset -> {out}  ({len(adapted):,} chars)")
     print("Run scripts/make_finetune.py to build the slim (no-embeddings) fine-tune file.")
     # NEXT: release this adapted set (HF + Kaggle), then feed to AutoScientist
