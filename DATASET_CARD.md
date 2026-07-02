@@ -3,38 +3,65 @@
 <!-- This doubles as the README on the Hugging Face + Kaggle dataset repos. -->
 
 ## Summary
-An original instruction-tuning dataset for **code-mixed / romanized Bengali ("Banglish")**:
-prompt→response pairs in the register Bengali speakers actually type online. Built and
-adapted with Adaption's Adaptive Data platform. This is the originality axis of the
-submission — document it thoroughly.
+An **original** instruction-tuning dataset for **code-mixed / romanized Bengali
+("Banglish")** — the register 100M+ people actually type online
+(e.g. *"kal ki plan? ami free achi"*). Every pair is authored by us or produced by
+safe, deterministic transformation of our own templates. **Nothing is scraped**, so the
+whole set is free to redistribute on Hugging Face and Kaggle.
 
-## Why it's original (not a re-upload)
-- `TODO` — describe what makes this set new: the code-mixed/romanized register, task mix,
-  cleaning pipeline, or synthesis method. Judges reward originality, so be specific.
+This is the originality + real-world-impact axis of the submission: off-the-shelf LLMs
+garble Banglish, switch to formal Bengali/English, or ignore the register entirely. This
+set teaches a model to **understand Banglish and reply in the user's register.**
 
 ## Composition
-- **Size:** `TODO` examples
-- **Format:** `{ "instruction": ..., "input": ..., "output": ... }` (or chat turns) — `TODO`
-- **Register mix:** pure Banglish / transliteration / Bengali-English QA — `TODO` %
-- **Task mix:** `TODO` (QA, rewrite, summarize, translate, chat, ...)
+- **Size:** 532 instruction pairs (335 authored/base + 197 spelling-augmented)
+- **Split:** 482 train / 50 held-out (our internal split; the *real* eval is Adaption's
+  held-out test set). **Zero normalized-instruction leakage** between splits (verified).
+- **Format (JSONL):**
+  ```json
+  {"id": "…", "instruction": "…", "input": "", "output": "…",
+   "task_type": "…", "domain": "…", "script": "romanized|native|mixed",
+   "source": "…", "augmented": false, "split": "train|heldout"}
+  ```
+  A flat `banglish_instructions.csv` (`original_prompt,response`) is also emitted for the
+  Adaption Adaptive-Data pipeline.
+- **Script mix:** romanized ~96% · native-script ~3% · mixed ~1% (mirrors real usage:
+  romanized dominates; native/mixed anchor robustness).
+- **Task mix (21 types):** translate, creative, classification, rewrite, grammar-fix,
+  intent, math, factual QA, advice, extraction/NER, **safety/refusal**, summarize,
+  reasoning, multi-turn, roleplay, code, emotional-support, planning, explanation,
+  how-to, mixed.
+- **Domains:** daily-life, education, work, relationships, tech, food, health, travel,
+  finance, entertainment.
 
-## Sourcing
-- Sources: `TODO` (list every source + its license/permission)
-- Synthetic generation (if any): model + prompts used — `TODO`
-- ⚠️ Only use sources you have the right to redistribute. Record licenses per source.
+## Why it's original (not a re-upload)
+1. **Register.** Native, natural romanized code-mix — not machine-transliterated Bengali.
+2. **In-register responses.** Outputs match the user's register (the exact failure mode
+   of off-the-shelf models), except translate/explain tasks where the target is explicit.
+3. **Spelling-robustness augmentation.** Banglish has *no* standard orthography
+   (`ache/ase/achhe`, `kivabe/kemne/kmne`, `bhalo/valo/vlo`). We deterministically generate
+   the variants people really type — **train-split only** — so the model learns meaning,
+   not surface form. See `data/sources.md`.
+4. **Safety in-register.** Graceful refusals + crisis-support responses written in Banglish.
 
-## Cleaning & adaptation pipeline
-1. Ingest via Adaptive Data — `TODO`
-2. Dedup / normalize romanization — `TODO`
-3. Quality + eval passes on-platform — `TODO`
-4. Train/held-out split (never leak into eval) — `TODO`
+## Sourcing & licensing
+- **100% original / synthetic** — authored pairs + safe slot-substitution + deterministic
+  spelling variants. No scraped or third-party corpus. Full methodology in
+  **`data/sources.md`**.
+- **Dataset license:** CC-BY-4.0 (safe to release; nothing upstream restricts it).
+- **PII:** all names/numbers/emails are fabricated placeholders. No real personal data.
 
-Scripts: `data/`.
-
-## Licensing
-- Dataset license: `TODO` (e.g. cc-by-4.0)
-- Confirm every upstream source permits redistribution under this license.
+## Reproduce
+```bash
+python data/build_dataset.py          # deterministic (seed=42) → all files below
+python data/build_dataset.py --stats-only
+```
+Outputs: `banglish_instructions.jsonl` / `.csv`, `train.jsonl`, `heldout.jsonl`,
+`sample.jsonl`. Pure stdlib, no dependencies, no network.
 
 ## Ethical considerations
-- Social-media-sourced text may contain informal/biased/PII content — describe your
-  PII scrub and filtering here. `TODO`
+- Advice pairs (health/finance/legal) are general and point to professionals/authorities
+  where appropriate; the safety-critical rows (chest pain, self-harm, scams) escalate to
+  real helplines (India: 108 ambulance, 1930 cyber, Tele-MANAS 14416).
+- The set is a **seed to prove lift**, then scale — see the scaling recipe in
+  `data/sources.md`.

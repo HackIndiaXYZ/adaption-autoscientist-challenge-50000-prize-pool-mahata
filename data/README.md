@@ -1,26 +1,43 @@
-# data/ — Banglish instruction dataset build
+# data/ — BanglaBridge Banglish instruction dataset
 
-The originality axis of the submission lives here. Document sourcing → cleaning → split so
-a judge can reproduce the dataset exactly.
+The originality axis of the submission. Everything here is **original / synthetic** and
+**safe to redistribute** — see `sources.md` for full provenance.
 
-## Pipeline
-1. **Source** — collect/synthesize code-mixed Bengali prompt→response pairs. Record every
-   source + license in `DATASET_CARD.md`.
-2. **Ingest** — load into Adaption's Adaptive Data platform.
-3. **Clean** — dedup, normalize romanization, PII scrub, quality filter.
-4. **Adapt** — Adaptive Data quality/eval passes.
-5. **Split** — train vs. held-out. Never leak held-out into training.
-
-## Files (add as you build)
-- `build_dataset.py` — `TODO`
-- `clean.py` — `TODO`
-- `sources.md` — one row per source: name, URL, license, count
-- `sample.jsonl` — a few example rows (for reviewers)
-
-## Format
-```json
-{"instruction": "kal weather kemon thakbe bosht?", "input": "", "output": "..."}
+## Build it
+```bash
+python build_dataset.py               # deterministic (seed=42), pure stdlib, no network
+python build_dataset.py --stats-only  # print the distribution without writing files
+python build_dataset.py --aug-variants 2   # more spelling variants per train row
 ```
 
-> Do NOT commit the full raw corpus here if it's large — host it on HF/Kaggle and link it.
-> Keep only scripts + a small `sample.jsonl` in git.
+## What gets written
+| File                          | Contents                                                  |
+|-------------------------------|-----------------------------------------------------------|
+| `banglish_instructions.jsonl` | full dataset, rich schema (one JSON object per line)      |
+| `banglish_instructions.csv`   | flat `original_prompt,response` for the Adaption pipeline |
+| `train.jsonl` / `heldout.jsonl` | 85/15 split, **no leakage** (heldout kept canonical)    |
+| `sample.jsonl`                | first 15 rows, for quick review                           |
+
+## Schema
+```json
+{"id": "…", "instruction": "kal weather kemon thakbe bol to?", "input": "",
+ "output": "…", "task_type": "qa", "domain": "daily_life",
+ "script": "romanized", "source": "gold", "augmented": false, "split": "train"}
+```
+
+## How it's made (`build_dataset.py`)
+1. **GOLD** — hand-authored natural Banglish pairs across 20+ task types.
+2. **BANKS** — curated short pairs with guaranteed-correct outputs (sentiment, translate,
+   rewrite, grammar, intent, extract, math, factual QA, safety, summarize, reasoning, native).
+3. **SLOTTED** — our templates + safe slot substitution (fabricated names) for volume.
+4. **Split** — seeded shuffle → train/held-out, deduped on normalized instruction.
+5. **Spelling augmentation** — deterministic meaning-preserving respellings of *train*
+   rows only (the Banglish robustness multiplier). See `sources.md`.
+
+## Feed it to Adaption
+`adaptive_pipeline.py` ingests `banglish_instructions.csv`
+(`column_mapping={"prompt": "original_prompt"}`), runs the adapt pass, and reports the
+before→after quality lift. Start on a small `max_rows` slice to gauge credit cost.
+
+> Full corpus is small enough to keep in git. If it grows large, host on HF/Kaggle and
+> keep only scripts + `sample.jsonl` here.

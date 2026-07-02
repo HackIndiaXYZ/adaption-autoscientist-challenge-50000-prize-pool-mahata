@@ -16,6 +16,11 @@ data/full/
 # (allow the small reviewer sample)
 !data/sample.jsonl
 
+# Adaptation run artifacts (large / regenerable)
+*.log
+data/adapt_run.log
+data/full/
+
 # Python
 __pycache__/
 *.pyc
