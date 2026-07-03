@@ -5,26 +5,26 @@ Every item below is required for **prize eligibility**. Print this and tick as y
 ## Admin (do first — unblocks everything)
 - [ ] Joined the mandatory WhatsApp channel
 - [ ] Joined Adaption Discord (`#autoscient-challenge` channel)
-- [ ] Signed up at **adaptionlabs.ai** → 1,000 credits activated
+- [x] Signed up at **adaptionlabs.ai** → 1,000 credits activated
 - [ ] Confirmed HackIndia registration (Team **MAHATA**) is active
 - [ ] Problem statement added to HackIndia event page (see `PROBLEM_STATEMENT.md`)
 - [ ] This repo pushed to the HackIndia submission GitHub URL
 
 ## Recon (before building)
-- [ ] Picked category: **Language** (Part 1)
-- [ ] Inspected Adaption's **baseline model** for Language
-- [ ] Inspected the **held-out test-set format** + scoring metric
+- [x] Picked category: **Language** (Part 1)
+- [x] Inspected Adaption's **baseline model** for Language
+- [x] Inspected the **held-out test-set format** + scoring metric
 - [ ] Finalized exact target task/register based on that test set
 
 ## Build
-- [ ] Original Banglish dataset ingested + adapted in **Adaptive Data**
-- [ ] Train / held-out split done, no leakage into eval
-- [ ] Ran the **AutoScientist** data↔recipe co-optimization loop (logged in `training/`)
-- [ ] Model converged; adapters/weights saved
+- [x] Original Banglish dataset ingested + adapted in **Adaptive Data**
+- [x] Train / held-out split done, no leakage into eval
+- [x] Ran the **AutoScientist** data↔recipe co-optimization loop (logged in `training/`)
+- [x] Model converged; adapters/weights saved
 
 ## The gate
-- [ ] **Measurable % improvement over baseline** on Adaption's held-out test set
-- [ ] Results table filled in `MODEL_CARD.md` + `eval/`
+- [x] **Measurable % improvement over baseline** on Adaption's held-out test set
+- [x] Results table filled in `MODEL_CARD.md` + `eval/`
 
 ## Open release (both platforms required)
 - [ ] Weights on **Hugging Face** + model card

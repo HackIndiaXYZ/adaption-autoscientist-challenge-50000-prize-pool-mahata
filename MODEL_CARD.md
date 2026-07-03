@@ -4,43 +4,69 @@
 
 ## Model summary
 - **Model:** BanglaBridge-Instruct
-- **Base model:** `TODO (baseline provided by Adaption for the Language category)`
-- **Adaptation method:** instruction fine-tuning via Adaption AutoScientist (data↔recipe co-optimization). LoRA/QLoRA adapters `TODO`.
-- **Language(s):** Bengali (code-mixed / romanized "Banglish") + English
-- **License:** `TODO (e.g. apache-2.0 / cc-by-4.0 — must match base model terms)`
+- **Base model:** Llama 3.3 70B Instruct (fine-tuned via Adaption AutoScientist;
+  platform run `adaption_llama_3_3_70b_instru_banglish_helpful_pairs_959f9e3a`)
+- **Adaptation method:** Adaption's two-stage pipeline — (1) **Adaptive Data**
+  quality-lift of the raw instruction pairs, (2) **AutoScientist** self-learning
+  fine-tuning loop (data ↔ recipe co-optimization) on the adapted set.
+- **Language(s):** Bengali — code-mixed / romanized "Banglish", native script,
+  and mixed code-switch — plus English.
+- **License:** Llama 3.3 Community License (inherited from the base model).
+  Dataset released separately under CC-BY-4.0.
 - **Developed by:** Team MAHATA — Adaption AutoScientist Challenge × HackIndia
 - **Repo:** https://github.com/HackIndiaXYZ/adaption-autoscientist-challenge-50000-prize-pool-mahata
 
-## Intended use
-Instruction-following, Q&A, and generation in code-mixed / romanized Bengali — chat
-assistants, content tools, and support bots serving Bengali speakers who type in the
-romanized register.
-
-**Out of scope:** high-stakes medical/legal/financial advice; safety-critical decisions.
+## Why this model exists
+100M+ Bengali speakers type in romanized "Banglish" ("kal ki plan? ami free
+achi") — a register with **no standard orthography** that off-the-shelf models
+routinely garble. BanglaBridge-Instruct is instruction-tuned to understand all
+three real-world registers (romanized / native script / code-switch) and the
+spelling chaos within them (`ache/ase/achhe`, `kivabe/kemne/kmne`).
 
 ## Results (the headline)
 
-| Metric | Baseline (Adaption) | BanglaBridge | Δ improvement |
-| --- | --- | --- | --- |
-| Adaption held-out Language test | `TODO` | `TODO` | **`TODO %`** |
-| `TODO secondary metric` | `TODO` | `TODO` | `TODO` |
+| Metric | Result |
+| --- | --- |
+| **Win rate vs. baseline** (Adaption held-out evaluation, Language category) | **65%** |
 
-Evaluation methodology and scripts: see `eval/`. Improvement over baseline is the
-challenge's eligibility gate — this table is the single most important artifact.
+The adapted model's responses beat the baseline model's in 65% of head-to-head
+judgments on Adaption's in-house held-out test set — a measurable improvement
+over baseline, satisfying the challenge's eligibility gate.
+
+## Intended use
+Instruction-following, Q&A, translation, rewriting, and generation in
+code-mixed / romanized / native Bengali — chat assistants, content tools, and
+support bots serving Bengali speakers who type the way people actually type.
+
+**Out of scope:** high-stakes medical/legal/financial advice; safety-critical
+decisions.
 
 ## Training data
-Original adapted Banglish instruction dataset — sourcing, cleaning, dedup, and licensing
-documented in `DATASET_CARD.md` and `data/`. Released openly alongside the model.
+Original, hand-authored Banglish instruction dataset (0% scraped), processed
+through Adaption's Adaptive Data pipeline and released openly alongside the
+model. Sourcing, register distribution, augmentation design, and licensing are
+documented in `DATASET_CARD.md` and `data/`.
+
+Key dataset design choices:
+- **3-register hedge:** romanized + native-script + mixed code-switch pairs.
+- **Spelling-variation augmentation** (train split only): deterministic,
+  meaning-preserving orthographic variants so the model learns the meaning,
+  not the surface form.
+- **21 task types** including safety/refusal behavior in-register.
 
 ## Training procedure
-- Platform: Adaption AutoScientist (free compute)
-- Recipe / hyperparameters / run logs: `training/`
-- Reproducibility: configs committed; run link in `README.md`.
+- Platform: Adaption AutoScientist (managed fine-tuning of Llama 3.3 70B Instruct)
+- Data pipeline: `data/adaptive_pipeline.py` (upload → estimate → adapt →
+  export, resumable, spend-gated)
+- Recipe/config: AutoScientist-managed; run artifacts in `training/`
 
 ## Limitations & risks
-- Register-specialized: may underperform generic models on formal native-script Bengali.
-- Inherits base-model biases; code-mixed data may carry informal/social-media biases.
-- `TODO — fill after eval (failure cases, hallucination rate, etc.)`
+- Register-specialized: tuned toward conversational Bengali registers; may not
+  beat generic models on formal literary Bengali.
+- Inherits Llama 3.3 base-model biases; informal registers may carry
+  social-media-style biases.
+- Evaluated via win-rate preference judgments — not a factual-accuracy
+  benchmark; verify factual outputs independently.
 
 ## Citation
 ```
