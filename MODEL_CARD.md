@@ -3,9 +3,10 @@
 <!-- This doubles as the README on the Hugging Face model repo. Keep it in sync. -->
 
 ## Model summary
-- **Model:** BanglaBridge-Instruct
-- **Base model:** Llama 3.3 70B Instruct (fine-tuned via Adaption AutoScientist;
-  platform run `adaption_llama_3_3_70b_instru_banglish_helpful_pairs_959f9e3a`)
+- **Model:** BanglaBridge-Instruct — a **LoRA adapter** for Llama 3.3 70B Instruct.
+- **Base model:** `togethercomputer/Meta-Llama-3.3-70B-Instruct-Reference`
+  (Meta Llama 3.3 70B Instruct). Fine-tuned via Adaption AutoScientist; platform
+  run `adaption_llama_3_3_70b_instru_banglish_helpful_pairs_959f9e3a`.
 - **Adaptation method:** Adaption's two-stage pipeline — (1) **Adaptive Data**
   quality-lift of the raw instruction pairs, (2) **AutoScientist** self-learning
   fine-tuning loop (data ↔ recipe co-optimization) on the adapted set.
@@ -55,10 +56,28 @@ Key dataset design choices:
 - **21 task types** including safety/refusal behavior in-register.
 
 ## Training procedure
-- Platform: Adaption AutoScientist (managed fine-tuning of Llama 3.3 70B Instruct)
-- Data pipeline: `data/adaptive_pipeline.py` (upload → estimate → adapt →
-  export, resumable, spend-gated)
-- Recipe/config: AutoScientist-managed; run artifacts in `training/`
+- **Platform:** Adaption AutoScientist (managed fine-tuning of Llama 3.3 70B Instruct)
+- **Method:** LoRA (PEFT), bf16. `peft_type=LORA`, `task_type=CAUSAL_LM`.
+- **Hyperparameters** (from `adapter_config.json` / `trainer_state.json`):
+  - rank `r = 64`, `lora_alpha = 128`, `lora_dropout = 0.05`, `bias = none`
+  - target modules: `q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj`
+  - 4 epochs, 516 steps, per-device batch size 1
+  - **train loss 1.52 → 0.38** (smooth convergence, no divergence)
+- **Data pipeline:** `data/adaptive_pipeline.py` (upload → estimate → adapt →
+  export; resumable, spend-gated)
+- **Artifacts:** LoRA adapter (`adapter_model.safetensors`, ~3.3 GB), tokenizer,
+  chat template, and `trainer_state.json` released in `training/`.
+
+### How to use (load the adapter on the base model)
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+
+base = "meta-llama/Llama-3.3-70B-Instruct"   # or the Together reference build
+tok  = AutoTokenizer.from_pretrained(base)
+model = AutoModelForCausalLM.from_pretrained(base, torch_dtype="bfloat16", device_map="auto")
+model = PeftModel.from_pretrained(model, "MAHATA/BanglaBridge-Instruct")  # this adapter
+```
 
 ## Limitations & risks
 - Register-specialized: tuned toward conversational Bengali registers; may not

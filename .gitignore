@@ -4,9 +4,13 @@
 *.gguf
 *.pt
 *.ckpt
+*.tgz
+*.tar.zst
 checkpoints/
 adapters/
 wandb/
+training/banglabridge-adapter/
+training/*.tgz
 
 # Full datasets — keep only scripts + a small sample.jsonl in git
 data/raw/
