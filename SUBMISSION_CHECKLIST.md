@@ -29,8 +29,8 @@ Every item below is required for **prize eligibility**. Print this and tick as y
 ## Open release (both platforms required)
 - [x] Weights on **Hugging Face** + model card
 - [x] Dataset on **Hugging Face** + dataset card
-- [ ] Weights on **Kaggle** + model card
-- [ ] Dataset on **Kaggle** + dataset card
+- [x] Weights on **Kaggle** + model card
+- [x] Dataset on **Kaggle** + dataset card
 - [x] Reproducible pipeline documented
 
 ## Amplify
