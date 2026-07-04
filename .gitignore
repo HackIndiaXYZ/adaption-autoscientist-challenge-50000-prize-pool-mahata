@@ -11,6 +11,8 @@ adapters/
 wandb/
 training/banglabridge-adapter/
 training/hf_dataset/
+training/kaggle_weights/
+training/kaggle_dataset/
 training/*.tgz
 
 # Full datasets — keep only scripts + a small sample.jsonl in git
