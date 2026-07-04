@@ -8,7 +8,7 @@ Every item below is required for **prize eligibility**. Print this and tick as y
 - [x] Signed up at **adaptionlabs.ai** → 1,000 credits activated
 - [ ] Confirmed HackIndia registration (Team **MAHATA**) is active
 - [ ] Problem statement added to HackIndia event page (see `PROBLEM_STATEMENT.md`)
-- [ ] This repo pushed to the HackIndia submission GitHub URL
+- [x] This repo pushed to the HackIndia submission GitHub URL
 
 ## Recon (before building)
 - [x] Picked category: **Language** (Part 1)

@@ -48,7 +48,7 @@ URLs into the submission form.
 > 🤗 https://huggingface.co/subhajitmahata84/BanglaBridge-Instruct
 > 📄 https://huggingface.co/datasets/subhajitmahata84/banglabridge-instructions
 > 📦 [KAGGLE LINK]
-> 💻 [REPO LINK]
+> 💻 https://github.com/HackIndiaXYZ/adaption-autoscientist-challenge-50000-prize-pool-mahata
 >
 > Thanks @Adaption for the platform and the challenge — low-resource and
 > code-mixed languages are exactly where adapted models matter most.
