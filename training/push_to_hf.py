@@ -120,7 +120,7 @@ def main() -> None:
         repo_type="model",
         commit_message="BanglaBridge-Instruct: LoRA adapter for Llama 3.3 70B (65% win rate)",
     )
-    print(f"  ✓ https://huggingface.co/{model_id}")
+    print(f"  OK https://huggingface.co/{model_id}")
 
     # 2) DATASET --------------------------------------------------------------
     print(f"\nCreating + uploading dataset repo: {dataset_id}")
@@ -131,7 +131,7 @@ def main() -> None:
         repo_type="dataset",
         commit_message="BanglaBridge instruction dataset (adapted, Banglish)",
     )
-    print(f"  ✓ https://huggingface.co/datasets/{dataset_id}")
+    print(f"  OK https://huggingface.co/datasets/{dataset_id}")
 
     print("\nDONE. Both repos live. If created --private, flip them PUBLIC in "
           "repo Settings before submitting (challenge requires open release).")

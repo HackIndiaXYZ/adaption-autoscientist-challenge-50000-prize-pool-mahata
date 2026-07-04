@@ -27,11 +27,11 @@ Every item below is required for **prize eligibility**. Print this and tick as y
 - [x] Results table filled in `MODEL_CARD.md` + `eval/`
 
 ## Open release (both platforms required)
-- [ ] Weights on **Hugging Face** + model card
-- [ ] Dataset on **Hugging Face** + dataset card
+- [x] Weights on **Hugging Face** + model card
+- [x] Dataset on **Hugging Face** + dataset card
 - [ ] Weights on **Kaggle** + model card
 - [ ] Dataset on **Kaggle** + dataset card
-- [ ] Reproducible pipeline documented
+- [x] Reproducible pipeline documented
 
 ## Amplify
 - [ ] LinkedIn post (tag **Adaption**)

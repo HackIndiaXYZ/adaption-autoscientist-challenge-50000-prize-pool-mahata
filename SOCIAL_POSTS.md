@@ -17,7 +17,7 @@ URLs into the submission form.
 > Built with @adaption_ai AutoScientist for the AutoScientist Challenge.
 >
 > Weights + dataset, fully open:
-> 🤗 [HF LINK]
+> 🤗 https://huggingface.co/subhajitmahata84/BanglaBridge-Instruct
 > 📦 [KAGGLE LINK]
 >
 > Team MAHATA | #AutoScientistChallenge #HackIndia
@@ -45,7 +45,8 @@ URLs into the submission form.
 >
 > Everything is released openly — weights and dataset on both Hugging Face and
 > Kaggle:
-> 🤗 [HF LINK]
+> 🤗 https://huggingface.co/subhajitmahata84/BanglaBridge-Instruct
+> 📄 https://huggingface.co/datasets/subhajitmahata84/banglabridge-instructions
 > 📦 [KAGGLE LINK]
 > 💻 [REPO LINK]
 >
