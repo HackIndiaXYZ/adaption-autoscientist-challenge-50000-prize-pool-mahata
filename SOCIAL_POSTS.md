@@ -1,30 +1,27 @@
 # Social posts — required for eligibility (LinkedIn + X, tag Adaption)
 
-Fill the [LINKS] after the HF/Kaggle uploads. Post both, then paste the post
-URLs into the submission form.
+Post both, then paste the post URLs into the submission form.
 
 ---
 
-## X (tag @adaption_ai)
+## X (tag @adaption_ai) — fits FREE tier: 273/280 chars (X counts any URL as 23)
 
-> 100M+ people type Bengali like this: "kal ki plan? ami free achi"
->
-> Most LLMs garble it.
->
-> So we fine-tuned Llama 3.3 70B on an original, hand-authored Banglish
-> instruction dataset — 65% win rate vs baseline on the held-out eval. 🇮🇳
->
-> Built with @adaption_ai AutoScientist for the AutoScientist Challenge.
->
-> Weights + dataset, fully open:
-> 🤗 https://huggingface.co/subhajitmahata84/BanglaBridge-Instruct
-> 📦 https://www.kaggle.com/datasets/subhajit7/banglabridge-instruct-lora
->
-> Team MAHATA | #AutoScientistChallenge #HackIndia
+Copy-paste exactly what's inside the code block, nothing else:
+
+```
+"kal ki plan? ami free achi" - 100M+ people type Bengali like this. Most LLMs garble it.
+
+So we fine-tuned Llama 3.3 70B on it - 65% win rate vs baseline. Weights + dataset fully open:
+https://huggingface.co/subhajitmahata84/BanglaBridge-Instruct
+
+Built with @adaption_ai AutoScientist. Team MAHATA #HackIndia
+```
+
+(If X still complains, delete the last line's "#HackIndia" — that frees 10 more.)
 
 ---
 
-## LinkedIn (tag Adaption / adaption-labs)
+## LinkedIn (tag Adaption / adaption-labs) — no length limit, post in full
 
 > **We taught a 70B model to speak Banglish — and it beats the baseline 65% of the time.**
 >
@@ -58,7 +55,6 @@ URLs into the submission form.
 ---
 
 ## Notes
-- X: keep under 280 chars if posting without premium — trim the dataset line
-  if needed; the must-haves are @adaption_ai, the 65% number, and the HF link.
-- If Track B (refined dataset) beats 65%, update the number in both posts
-  before posting.
+- The Kaggle weights page and dataset page are linked from the HF model card,
+  so the short X post still leads judges to everything.
+- After posting, copy both post URLs — the submission form asks for them.
